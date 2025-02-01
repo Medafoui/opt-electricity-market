@@ -33,7 +33,7 @@ the optimal level of participation in futures and spot electricity markets hedgi
 
 :computer: **Developer**
 - This web application has been developed by **Mohamed Afif Chifaoui**.
-- Official GitHub repository of the app: [](https://github.com/)
+- Official GitHub repository of the app: [](https://github.com/Medafoui/opt-electricity-market)
 
 """
 , unsafe_allow_html=True

@@ -7,5 +7,3 @@ plotly
 seaborn
 matplotlib
 gurobipy
-glpk
-glpk-utils

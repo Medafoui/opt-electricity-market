@@ -118,8 +118,8 @@ def run_optimization(scenarios, beta, return_model=False):
 
 
     # Solver
-    solver = SolverFactory('gurobi')
-    # solver = SolverFactory('glpk')
+    # solver = SolverFactory('gurobi')
+    solver = SolverFactory('glpk')
 
 
 

@@ -5,8 +5,7 @@ from optimization import run_optimization
 import plotly.graph_objects as go
 import plotly.express as px
 import numpy as np  
-import os
-os.environ['GRB_LICENSE_FILE'] = '/app/gurobi.lic'
+
 
 
 

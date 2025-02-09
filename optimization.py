@@ -63,7 +63,7 @@ def run_optimization(scenarios, beta, return_model=False):
     model.PF_max = Param(model.F, initialize=250)  # Max forward sales
     model.PG_max = Param(model.G, initialize={1: 500})  # Max generation capacity
     model.beta = Param(initialize=0.1, mutable=True)  # Risk aversion parameter
-    model.alpha = Param(initialize=0.7)  # Confidence level for CVaR
+    model.alpha = Param(initialize=0.6)  # Confidence level for CVaR
     model.pi = Param(model.Omega, initialize={w: 1 / len(scenarios_df.columns) for w in model.Omega})  # Scenario probability
 
 

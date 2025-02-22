@@ -1,37 +1,10 @@
 # Description: This file contains the optimization model for the energy trading problem.
 import pandas as pd
 from pyomo.environ import ConcreteModel, Var, Param, NonNegativeReals, RangeSet, Objective, Constraint, SolverFactory, maximize, Reals
-from pyomo.opt import SolverStatus, TerminationCondition
 import numpy as np
 from tqdm import tqdm
-import os
 import streamlit as st
 import gurobipy as gp
-
-
-# # Set up the Gurobi environment with WLS credentials
-# os.environ["GRB_WLSACCESSID"] = st.secrets["GRB_WLSACCESSID"]
-# os.environ["GRB_WLSSECRET"] = st.secrets["GRB_WLSSECRET"]
-# os.environ["GRB_LICENSEID"] = st.secrets["GRB_LICENSEID"]
-
-
-
-# # Locally
-# from dotenv import load_dotenv
-# load_dotenv()
-
-# # Get the values safely
-# wls_access_id = os.getenv("GRB_WLSACCESSID")
-# wls_secret = os.getenv("GRB_WLSSECRET")
-# license_id = os.getenv("GRB_LICENSEID")
-
-# # Ensure they are not None before setting them
-# if not wls_access_id or not wls_secret or not license_id:
-#     raise ValueError("Gurobi WLS credentials are missing. Please check your environment variables.")
-
-# os.environ["GRB_WLSACCESSID"] = wls_access_id
-# os.environ["GRB_WLSSECRET"] = wls_secret
-# os.environ["GRB_LICENSEID"] = license_id
 
 
 
@@ -146,42 +119,7 @@ def run_optimization(scenarios, beta, return_model=False):
 
 
     # Solver
-    # solver = SolverFactory('gurobi')
-
-    # Set up the Gurobi environment with WLS credentials
-    # env = gp.Env(
-    #     params={
-    #     "WLSACCESSID": os.getenv("GRB_WLSACCESSID"),
-    #     "WLSSECRET": os.getenv("GRB_WLSSECRET"),
-    #     "LICENSEID": int(os.getenv("GRB_LICENSEID", 0)),  # Ensure it's an integer
-    #     }
-    # )
-
-    # env = gp.Env(
-    #     params={
-    #     "WLSACCESSID": st.secrets["GRB_WLSACCESSID"],
-    #     "WLSSECRET": st.secrets["GRB_WLSSECRET"],
-    #     "LICENSEID": int(st.secrets["GRB_LICENSEID"]),  # Ensure it's an integer
-    #     }
-    # )
-
-    # Step 1: Try to initialize the WLS environment with provided secrets
-    try:
-        env = gp.Env(
-            params={
-                "WLSAccessID": st.secrets["GRB_WLSACCESSID"],
-                "WLSSecret": st.secrets["GRB_WLSSECRET"],
-                "LICENSEID": int(st.secrets["GRB_LICENSEID"]),  # Ensure it's an integer
-            }
-        )
-        print("WLS Environment initialized successfully")
-    except Exception as e:
-        print(f"Error initializing WLS environment: {e}")
-
-
-
-    # Create the solver with the Gurobi environment
-    solver = SolverFactory('gurobi', solver_io="python", env=env)
+    solver = SolverFactory('gurobi')
 
 
     # If beta is a single value, perform computation for just that beta
@@ -216,14 +154,11 @@ def run_optimization(scenarios, beta, return_model=False):
     obj_values = []
     pf_values = []
 
-    progress_bar = st.progress(0)  # Initialize Streamlit progress bar
 
-    for i, b in enumerate(beta_values):
-
-    # for b in tqdm(beta_values, desc='Processing for Beta values'):
+    for b in tqdm(beta_values, desc='Processing for Beta values'):
         model.beta.set_value(b)
-        # results = solver.solve(model, tee=True)
-        results = solver.solve(model)
+        results = solver.solve(model, tee=True)
+        # results = solver.solve(model)
         model_expected_profit = sum(
             model.pi[w] * (
                 sum(model.lambda_F[f] * model.PF[f].value for f in model.F for t in model.T) +
@@ -239,8 +174,7 @@ def run_optimization(scenarios, beta, return_model=False):
         profit_values.append(model_expected_profit)
         pf_values.append(model.PF[1].value)
 
-    # Update the progress bar
-    progress_bar.progress((i + 1) / len(beta_values))
+
 
     results_dict = {
         'beta_values': beta_values,

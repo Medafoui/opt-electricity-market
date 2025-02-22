@@ -15,7 +15,7 @@ import gurobipy as gp
 # os.environ["GRB_LICENSEID"] = st.secrets["GRB_LICENSEID"]
 
 
-ç
+
 # # Locally
 # from dotenv import load_dotenv
 # load_dotenv()

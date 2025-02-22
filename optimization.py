@@ -14,9 +14,9 @@ if os.path.exists(".env"):
     load_dotenv()
 
 # Try to get secrets from Streamlit Cloud, fallback to .env for local
-wls_access_id = st.secrets.get("GRB_WLSACCESSID") or os.getenv("GRB_WLSACCESSID")
-wls_secret = st.secrets.get("GRB_WLSSECRET") or os.getenv("GRB_WLSSECRET")
-license_id = st.secrets.get("GRB_LICENSEID") or os.getenv("GRB_LICENSEID")
+wls_access_id = st.secrets.get("GRB_WLSACCESSID") 
+wls_secret = st.secrets.get("GRB_WLSSECRET") 
+license_id = st.secrets.get("GRB_LICENSEID") 
 
 # Ensure they are not None before setting them
 if not wls_access_id or not wls_secret or not license_id:

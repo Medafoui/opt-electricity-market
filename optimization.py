@@ -14,6 +14,10 @@ os.environ["GRB_LICENSEID"] = st.secrets["GRB_LICENSEID"]
 
 
 
+print("Cloud GRB_WLSACCESSID:", os.getenv("GRB_WLSACCESSID"))
+print("Cloud GRB_WLSSECRET:", os.getenv("GRB_WLSSECRET"))
+print("Cloud GRB_LICENSEID:", os.getenv("GRB_LICENSEID"))
+
 
 #Locally
 # from dotenv import load_dotenv

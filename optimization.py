@@ -8,19 +8,15 @@ import os
 import streamlit as st
 
 
-# Get credentials from Streamlit secrets
-wls_access_id = st.secrets["GRB_WLSACCESSID"]
-wls_secret = st.secrets["GRB_WLSSECRET"]
-license_id = st.secrets["GRB_LICENSEID"]
+os.environ["GRB_WLSACCESSID"] = st.secrets["GRB_WLSACCESSID"]
+os.environ["GRB_WLSSECRET"] = st.secrets["GRB_WLSSECRET"]
+os.environ["GRB_LICENSEID"] = st.secrets["GRB_LICENSEID"]
 
-# Set them as environment variables
-os.environ["GRB_WLSACCESSID"] = wls_access_id
-os.environ["GRB_WLSSECRET"] = wls_secret
-os.environ["GRB_LICENSEID"] = str(license_id)  # Ensure it's a string
 
+
+
+#Locally
 # from dotenv import load_dotenv
-
-# # Load environment variables from .env (if available)
 # load_dotenv()
 
 # # Get the values safely

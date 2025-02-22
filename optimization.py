@@ -4,6 +4,28 @@ from pyomo.environ import ConcreteModel, Var, Param, NonNegativeReals, RangeSet,
 from pyomo.opt import SolverStatus, TerminationCondition
 import numpy as np
 from tqdm import tqdm
+import os
+import streamlit as st
+from dotenv import load_dotenv
+
+
+# Load environment variables from .env (only for local use)
+if os.path.exists(".env"):
+    load_dotenv()
+
+# Try to get secrets from Streamlit Cloud, fallback to .env for local
+wls_access_id = st.secrets.get("GRB_WLSACCESSID") or os.getenv("GRB_WLSACCESSID")
+wls_secret = st.secrets.get("GRB_WLSSECRET") or os.getenv("GRB_WLSSECRET")
+license_id = st.secrets.get("GRB_LICENSEID") or os.getenv("GRB_LICENSEID")
+
+# Ensure they are not None before setting them
+if not wls_access_id or not wls_secret or not license_id:
+    raise ValueError("Gurobi WLS credentials are missing. Please check your environment variables.")
+
+# Set environment variables
+os.environ["GRB_WLSACCESSID"] = wls_access_id
+os.environ["GRB_WLSSECRET"] = wls_secret
+os.environ["GRB_LICENSEID"] = license_id
 
 
 

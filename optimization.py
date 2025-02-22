@@ -6,26 +6,35 @@ import numpy as np
 from tqdm import tqdm
 import os
 import streamlit as st
-from dotenv import load_dotenv
 
 
-# Load environment variables from .env (only for local use)
-if os.path.exists(".env"):
-    load_dotenv()
+# Get credentials from Streamlit secrets
+wls_access_id = st.secrets["GRB_WLSACCESSID"]
+wls_secret = st.secrets["GRB_WLSSECRET"]
+license_id = st.secrets["GRB_LICENSEID"]
 
-# Try to get secrets from Streamlit Cloud, fallback to .env for local
-wls_access_id = st.secrets.get("GRB_WLSACCESSID") 
-wls_secret = st.secrets.get("GRB_WLSSECRET") 
-license_id = st.secrets.get("GRB_LICENSEID") 
-
-# Ensure they are not None before setting them
-if not wls_access_id or not wls_secret or not license_id:
-    raise ValueError("Gurobi WLS credentials are missing. Please check your environment variables.")
-
-# Set environment variables
+# Set them as environment variables
 os.environ["GRB_WLSACCESSID"] = wls_access_id
 os.environ["GRB_WLSSECRET"] = wls_secret
-os.environ["GRB_LICENSEID"] = license_id
+os.environ["GRB_LICENSEID"] = str(license_id)  # Ensure it's a string
+
+# from dotenv import load_dotenv
+
+# # Load environment variables from .env (if available)
+# load_dotenv()
+
+# # Get the values safely
+# wls_access_id = os.getenv("GRB_WLSACCESSID")
+# wls_secret = os.getenv("GRB_WLSSECRET")
+# license_id = os.getenv("GRB_LICENSEID")
+
+# # Ensure they are not None before setting them
+# if not wls_access_id or not wls_secret or not license_id:
+#     raise ValueError("Gurobi WLS credentials are missing. Please check your environment variables.")
+
+# os.environ["GRB_WLSACCESSID"] = wls_access_id
+# os.environ["GRB_WLSSECRET"] = wls_secret
+# os.environ["GRB_LICENSEID"] = license_id
 
 
 

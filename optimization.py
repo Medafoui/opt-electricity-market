@@ -157,13 +157,28 @@ def run_optimization(scenarios, beta, return_model=False):
     #     }
     # )
 
-    env = gp.Env(
-        params={
-        "WLSACCESSID": st.secrets["GRB_WLSACCESSID"],
-        "WLSSECRET": st.secrets["GRB_WLSSECRET"],
-        "LICENSEID": int(st.secrets["GRB_LICENSEID"]),  # Ensure it's an integer
-        }
-    )
+    # env = gp.Env(
+    #     params={
+    #     "WLSACCESSID": st.secrets["GRB_WLSACCESSID"],
+    #     "WLSSECRET": st.secrets["GRB_WLSSECRET"],
+    #     "LICENSEID": int(st.secrets["GRB_LICENSEID"]),  # Ensure it's an integer
+    #     }
+    # )
+
+    # Step 1: Try to initialize the WLS environment with provided secrets
+    try:
+        env = gp.Env(
+            params={
+                "WLSAccessID": st.secrets["GRB_WLSACCESSID"],
+                "WLSSecret": st.secrets["GRB_WLSSECRET"],
+                "LICENSEID": int(st.secrets["GRB_LICENSEID"]),  # Ensure it's an integer
+            }
+        )
+        print("WLS Environment initialized successfully")
+    except Exception as e:
+        print(f"Error initializing WLS environment: {e}")
+
+
 
     # Create the solver with the Gurobi environment
     solver = SolverFactory('gurobi', solver_io="python", env=env)

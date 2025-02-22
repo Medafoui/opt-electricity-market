@@ -6,20 +6,17 @@ import numpy as np
 from tqdm import tqdm
 import os
 import streamlit as st
+import gurobipy as gp
 
 
-os.environ["GRB_WLSACCESSID"] = st.secrets["GRB_WLSACCESSID"]
-os.environ["GRB_WLSSECRET"] = st.secrets["GRB_WLSSECRET"]
-os.environ["GRB_LICENSEID"] = st.secrets["GRB_LICENSEID"]
+# # Set up the Gurobi environment with WLS credentials
+# os.environ["GRB_WLSACCESSID"] = st.secrets["GRB_WLSACCESSID"]
+# os.environ["GRB_WLSSECRET"] = st.secrets["GRB_WLSSECRET"]
+# os.environ["GRB_LICENSEID"] = st.secrets["GRB_LICENSEID"]
 
 
-
-print("Cloud GRB_WLSACCESSID:", os.getenv("GRB_WLSACCESSID"))
-print("Cloud GRB_WLSSECRET:", os.getenv("GRB_WLSSECRET"))
-print("Cloud GRB_LICENSEID:", os.getenv("GRB_LICENSEID"))
-
-
-#Locally
+ç
+# # Locally
 # from dotenv import load_dotenv
 # load_dotenv()
 
@@ -149,8 +146,27 @@ def run_optimization(scenarios, beta, return_model=False):
 
 
     # Solver
-    solver = SolverFactory('gurobi')
+    # solver = SolverFactory('gurobi')
 
+    # Set up the Gurobi environment with WLS credentials
+    # env = gp.Env(
+    #     params={
+    #     "WLSACCESSID": os.getenv("GRB_WLSACCESSID"),
+    #     "WLSSECRET": os.getenv("GRB_WLSSECRET"),
+    #     "LICENSEID": int(os.getenv("GRB_LICENSEID", 0)),  # Ensure it's an integer
+    #     }
+    # )
+
+    env = gp.Env(
+        params={
+        "WLSACCESSID": st.secrets["GRB_WLSACCESSID"],
+        "WLSSECRET": st.secrets["GRB_WLSSECRET"],
+        "LICENSEID": int(st.secrets["GRB_LICENSEID"]),  # Ensure it's an integer
+        }
+    )
+
+    # Create the solver with the Gurobi environment
+    solver = SolverFactory('gurobi', solver_io="python", env=env)
 
 
     # If beta is a single value, perform computation for just that beta
@@ -185,9 +201,14 @@ def run_optimization(scenarios, beta, return_model=False):
     obj_values = []
     pf_values = []
 
-    for b in tqdm(beta_values, desc='Processing for Beta values'):
+    progress_bar = st.progress(0)  # Initialize Streamlit progress bar
+
+    for i, b in enumerate(beta_values):
+
+    # for b in tqdm(beta_values, desc='Processing for Beta values'):
         model.beta.set_value(b)
-        results = solver.solve(model, tee=True)
+        # results = solver.solve(model, tee=True)
+        results = solver.solve(model)
         model_expected_profit = sum(
             model.pi[w] * (
                 sum(model.lambda_F[f] * model.PF[f].value for f in model.F for t in model.T) +
@@ -203,6 +224,8 @@ def run_optimization(scenarios, beta, return_model=False):
         profit_values.append(model_expected_profit)
         pf_values.append(model.PF[1].value)
 
+    # Update the progress bar
+    progress_bar.progress((i + 1) / len(beta_values))
 
     results_dict = {
         'beta_values': beta_values,

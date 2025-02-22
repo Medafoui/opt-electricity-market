@@ -6,11 +6,6 @@ import plotly.graph_objects as go
 import plotly.express as px
 import numpy as np  
 
-import gurobipy as gp
-
-license_info = gp.Model().getParamInfo("LicenseID")
-st.write("Gurobi License ID:", license_info)
-
 
 st.title("Electricity Market Optimization :chart_with_upwards_trend:")
 
